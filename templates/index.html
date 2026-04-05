@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>READR — Your Book Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --cream: #f5f0e8;
+            --blush: #e8b4b8;
+            --rose:  #d4788a;
+            --deep:  #1a0a0e;
+            --ink:   #2d1a20;
+            --muted: #9a8a8e;
+            --white: #fff;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-serif:   'Cormorant Garamond', Georgia, serif;
+            --font-body:    'DM Sans', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--cream);
+            color: var(--deep);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── CUSTOM CURSOR ── */
+        .cursor {
+            width: 12px; height: 12px;
+            background: var(--rose);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        .cursor-ring {
+            width: 36px; height: 36px;
+            border: 1.5px solid var(--rose);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 52px;
+            background: rgba(245,240,232,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212,120,138,0.15);
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            letter-spacing: 0.15em;
+            color: var(--rose);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--rose); }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 130px 52px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: clamp(180px, 30vw, 360px);
+            color: rgba(212,120,138,0.07);
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+        }
+
+        .hero-headline {
+            font-family: var(--font-display);
+            font-size: clamp(80px, 14vw, 180px);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+            color: var(--deep);
+        }
+
+        .hero-headline .rose { color: var(--rose); }
+
+        .hero-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 20px;
+            max-width: 240px;
+            padding-top: 60px;
+        }
+
+        .hero-side p {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: var(--rose);
+            color: var(--white);
+            font-size: 0.68rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        /* ── SEARCH ── */
+        .search-wrapper {
+            margin-top: 64px;
+            display: flex;
+            align-items: center;
+            max-width: 640px;
+            border-bottom: 2px solid var(--deep);
+            padding-bottom: 14px;
+            position: relative;
+        }
+
+        .search-label {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            white-space: nowrap;
+            margin-right: 18px;
+        }
+
+        .search-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            color: var(--deep);
+            font-style: italic;
+        }
+
+        .search-wrapper input::placeholder { color: #c0b0b4; }
+
+        .search-btn {
+            background: var(--deep);
+            color: var(--cream);
+            border: none;
+            padding: 10px 24px;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            letter-spacing: 0.1em;
+            cursor: none;
+            border-radius: 4px;
+            transition: background 0.2s, transform 0.15s;
+            margin-left: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-btn:hover { background: var(--rose); transform: translateY(-2px); }
+
+        /* ── MARQUEE ── */
+        .marquee-strip {
+            background: var(--rose);
+            color: var(--white);
+            padding: 14px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-top: 60px;
+        }
+
+        .marquee-inner {
+            display: inline-flex;
+            gap: 48px;
+            animation: marquee 28s linear infinite;
+        }
+
+        .marquee-item {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            letter-spacing: 0.16em;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .marquee-dot {
+            width: 5px; height: 5px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        .trending { padding: 80px 52px; }
+
+        .section-eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--rose);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .section-title-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 52px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            letter-spacing: 0.04em;
+            line-height: 1;
+        }
+
+        .section-title em {
+            font-family: var(--font-serif);
+            font-size: 0.58em;
+            font-style: italic;
+            color: var(--rose);
+        }
+
+        .view-all {
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--muted);
+            padding-bottom: 2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .view-all:hover { color: var(--rose); border-color: var(--rose); }
+
+        /* ── BOOK CARDS ── */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 36px 24px;
+        }
+
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .book-card:nth-child(1)  { animation-delay: 0.05s; }
+        .book-card:nth-child(2)  { animation-delay: 0.10s; }
+        .book-card:nth-child(3)  { animation-delay: 0.15s; }
+        .book-card:nth-child(4)  { animation-delay: 0.20s; }
+        .book-card:nth-child(5)  { animation-delay: 0.25s; }
+        .book-card:nth-child(6)  { animation-delay: 0.30s; }
+        .book-card:nth-child(7)  { animation-delay: 0.35s; }
+        .book-card:nth-child(8)  { animation-delay: 0.40s; }
+        .book-card:nth-child(9)  { animation-delay: 0.45s; }
+        .book-card:nth-child(10) { animation-delay: 0.50s; }
+
+        .book-img-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+            aspect-ratio: 2/3;
+            background: #e0d4d8;
+        }
+
+        .book-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .book-card:hover .book-img-wrap img { transform: scale(1.06); }
+
+        .book-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: var(--rose);
+            color: white;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .book-info { padding: 14px 2px 0; }
+
+        .book-title {
+            font-family: var(--font-serif);
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--deep);
+        }
+
+        .book-author {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-rating { display: flex; align-items: center; gap: 5px; }
+        .stars { color: var(--rose); font-size: 0.65rem; letter-spacing: 1px; }
+        .rating-num { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+        .book-votes { font-size: 0.68rem; color: #bba8ac; margin-top: 4px; letter-spacing: 0.03em; }
+
+        /* ── CTA STRIP ── */
+        .cta-strip {
+            margin: 20px 52px 80px;
+            background: var(--deep);
+            border-radius: 16px;
+            padding: 64px 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-strip::before {
+            content: 'READR';
+            position: absolute;
+            right: -20px; bottom: -40px;
+            font-family: var(--font-display);
+            font-size: 180px;
+            color: rgba(255,255,255,0.04);
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+
+        .cta-left h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            color: var(--cream);
+            letter-spacing: 0.04em;
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+
+        .cta-left h2 span {
+            color: var(--blush);
+            font-family: var(--font-serif);
+            font-style: italic;
+        }
+
+        .cta-left p {
+            font-size: 0.88rem;
+            color: #a09098;
+            line-height: 1.7;
+            max-width: 380px;
+        }
+
+        .cta-btn {
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 18px 44px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            border-radius: 100px;
+            cursor: none;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover { background: var(--blush); color: var(--deep); transform: scale(1.04); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid #ddd5d8;
+            padding: 28px 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            letter-spacing: 0.12em;
+            color: var(--rose);
+        }
+
+        footer p { font-size: 0.78rem; color: var(--muted); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero          { animation: fadeUp 0.7s ease both; }
+        .marquee-strip { animation: fadeUp 0.7s 0.15s ease both; }
+        .trending      { animation: fadeUp 0.7s 0.25s ease both; }
+    </style>
+</head>
+<body>
+
+    <!-- CURSOR -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a class="nav-brand" href="/">READR</a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/recommend">Recommend</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg-text">READ</div>
+        <div class="hero-top">
+            <h1 class="hero-headline">
+                YOUR<br>
+                NEXT<br>
+                <span class="rose">READ.</span>
+            </h1>
+            <div class="hero-side">
+                <span class="hero-tag">ML Trained Model</span>
+                <p>Discover books tailored to your taste — powered by readers just like you.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-strip">
+        <div class="marquee-inner">
+            {% for item in ['Collaborative Filtering', 'Top Rated Books', 'Personalised Picks', 'AI Recommendations', 'Discover New Authors', 'Trending This Week', 'Collaborative Filtering', 'Top Rated Books', 'Personalised Picks', 'AI Recommendations', 'Discover New Authors', 'Trending This Week'] %}
+            <span class="marquee-item">{{ item }}<span class="marquee-dot"></span></span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- TRENDING BOOKS -->
+    <section class="trending">
+        <p class="section-eyebrow">Curated Collection</p>
+        <div class="section-title-row">
+            <h2 class="section-title">TRENDING <em>Top 50 Recommendations</em></h2>
+            <a href="/recommend" class="view-all">Get Recommendations →</a>
+        </div>
+        <div class="books-grid">
+            {% for i in range(book_name|length) %}
+            <div class="book-card">
+                <div class="book-img-wrap">
+                    <img src="{{ image[i] }}" alt="{{ book_name[i] }}" onerror="this.src='https://via.placeholder.com/160x240/e8b4b8/1a0a0e?text=No+Cover'">
+                    {% if loop.index <= 3 %}
+                    <span class="book-badge">Top Pick</span>
+                    {% endif %}
+                </div>
+                <div class="book-info">
+                    <p class="book-title">{{ book_name[i] }}</p>
+                    <p class="book-author">{{ author[i] }}</p>
+                    <div class="book-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-num">{{ "%.1f"|format(rating[i]) }}</span>
+                    </div>
+                    <p class="book-votes">{{ votes[i] }} ratings</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-strip">
+        <div class="cta-left">
+            <h2>Find your next<br><span>obsession.</span></h2>
+            <p>Tell us one book you love — our AI finds five more you'll devour. Powered by collaborative filtering trained on a million ratings.</p>
+        </div>
+        <a href="/recommend" class="cta-btn">GET RECOMMENDATIONS</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-brand">READR</span>
+        <p>Built by Riya Goyal · Powered by Flask & Python</p>
+        <p>Collaborative Filtering · Recommender System</p>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const ring   = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx + 'px';
+            cursor.style.top  = my + 'px';
+        });
+
+        (function animateRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animateRing);
+        })();
+
+        document.querySelectorAll('a, button, .book-card, input').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '20px'; cursor.style.height = '20px';
+                ring.style.width   = '56px'; ring.style.height   = '56px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '12px'; cursor.style.height = '12px';
+                ring.style.width   = '36px'; ring.style.height   = '36px';
+            });
+        });
+    </script>
+</body>
+</html>
