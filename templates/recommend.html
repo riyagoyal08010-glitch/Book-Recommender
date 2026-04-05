@@ -20,6 +20,107 @@
             --font-serif:   'Cormorant Garamond', Georgia, serif;
             --font-body:    'DM Sans', sans-serif;
         }
+        /* ────────────────────────────────────────
+   RESPONSIVE BREAKPOINTS
+──────────────────────────────────────── */
+
+/* ── CURSOR (desktop only) ── */
+.cursor, .cursor-ring { display: none; }
+
+@media (pointer: fine) {
+    .cursor { display: block; }
+    .cursor-ring { display: block; }
+    body { cursor: none; }
+}
+
+@media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .nav-links a { font-size: 0.7rem; }
+
+    .search-hero { padding: 110px 24px 48px; min-height: auto; }
+    .search-heading { margin-bottom: 32px; }
+    .search-label { display: none; }
+    .search-wrapper { max-width: 100%; }
+
+    .results-section { padding: 56px 24px; }
+    .section-title-row { margin-bottom: 36px; gap: 16px; flex-wrap: wrap; }
+    .back-link { white-space: nowrap; }
+
+    .books-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 32px 16px; }
+
+    .empty-state { padding: 60px 16px; }
+
+    .cta-strip {
+        margin: 20px 24px 60px;
+        padding: 48px 36px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cta-btn { width: 100%; text-align: center; padding: 16px 24px; }
+
+    footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 6px; flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+    nav { padding: 14px 20px; }
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 0.65rem; letter-spacing: 0.08em; }
+    .nav-brand { font-size: 1.3rem; }
+
+    .search-hero { padding: 100px 20px 40px; min-height: auto; }
+    .search-heading { font-size: clamp(2.2rem, 10vw, 3.5rem); margin-bottom: 28px; }
+
+    .search-wrapper {
+        flex-wrap: wrap;
+        gap: 10px;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .autocomplete-wrap {
+        width: 100%;
+        border-bottom: 2px solid var(--deep);
+        padding-bottom: 10px;
+    }
+
+    .search-btn {
+        width: 100%;
+        margin-left: 0;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .dropdown { top: calc(100% + 8px); }
+    .marquee-item { font-size: 0.8rem; letter-spacing: 0.1em; }
+
+    .results-section { padding: 48px 20px; }
+    .section-title { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+    .section-title-row { margin-bottom: 28px; }
+
+    .books-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 12px; }
+
+    .book-title { font-size: 0.88rem; }
+    .book-author { font-size: 0.72rem; }
+    .book-num { font-size: 1.8rem; }
+    .rec-badge { font-size: 0.5rem; padding: 3px 8px; }
+
+    .empty-state { padding: 48px 16px; }
+
+    .cta-strip {
+        margin: 16px 20px 48px;
+        padding: 36px 24px;
+        border-radius: 12px;
+    }
+
+    .cta-left h2 { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+    .cta-left p { font-size: 0.82rem; }
+    .cta-strip::before { font-size: 100px; }
+
+    footer { padding: 20px; }
+    footer p { font-size: 0.72rem; }
+}
 
         html { scroll-behavior: smooth; }
 
